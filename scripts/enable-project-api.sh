@@ -18,4 +18,4 @@ gcloud services enable \
     storage-api.googleapis.com \
     --project=$project_name
 
-    # source.googleapis.com - could not enable this API so removed....
+    # source.googleapis.com - could not enable this API so removed.... doesnt seem to impact functionality

@@ -25,14 +25,14 @@ fi
 # ------------------------------------------------------------------------------
 
 #CL variables to export to subprocess
-folder_name=$1
-parent_id=$2
-user_email=$3
+folder_name=$1 #username folder eg jblogs
+parent_id=$2 #direct parent folder id
+user_email=$3 #principal
 shr_prj=$4 #Required for creating instance templates
 host_prj=$5 #Required for connecting to host VPC project
 
 # define variables to export to subprocesses
-# '-' illegal char; convert '_', export and reset in subprocess
+# '-' illegal export charactger; convert '_', export and reset in subprocess
 parent_name=$(gcloud resource-manager folders describe $parent_id --format='value(displayName)')
 billing_account_id=$(gcloud beta billing accounts list --format='value(ACCOUNT_ID)' | sed 's/-/_/g')
 prj_prefix=$(gcloud projects list --filter="parent.id: $parent_id" --format="value(NAME)" --limit=1 | cut -d "-" -f1-3 | sed 's/-/_/g')
@@ -44,32 +44,34 @@ reset_var(){
     echo $1 | sed 's/_/-/g'
 }
 
+#Note: to implement any of these scripts for an available project, just name the project and uncomment lines below
+#project_name='mhra_ngs_dev_mr2s' #use underscores as replaced in subprocesses
+#export project_name
+
 #------------------------------------------------------------------------------
 # Workflow
 #------------------------------------------------------------------------------
 # Note: you can modify the gcp_project_setup_main() workflow run by hashing out steps or adding new ones
-# Note: bash does not allow export of variables containing illegal characters which include '-'
-# To sidestep, convert to '_', export string and then covert back
 
 gcp_project_setup_main(){
    
    set_variables # <- DO NOT DISABLE!
-   #create_folder #optional: create a new user folder under parent folder #Done
-   #iam_roles_folder #give user viewer IAM role for folder #Done
-   #create_project #create new user project #Done
-   #billing_project #set up billing for the project #Done
-   #create_buckets #create input, output and nextflow buckets for each project #Done
-   #enable_project_api
-   #create_lifecycle_rules #LEAVE OFF. Adjust lifecycle rules for bucket but cant set last access time as a condition so $$$ to implement... #Done
-   #create_custom_vpc #Done
-   #connect_host_vpc #WARNING: must supply host VPC project on script execution #Done
-   #create_firewall_rules #NOTE: applied only if not connecting to a host VPC. Only create FW rule for ssh VM connection #Done
-   #create_service_accounts #Done
-   #service_account_iam #Done
-   #user_account_iam #Done
-   create_instance_templates #Done
-   #add_vm_oslogin #add oslogin = TRUE to project-wide VM instances to link linux VM UID to GCP user/SA  #Done
-   #iam_policy_binding #attach SA and google amanged service agents to the host project - compare AB service project 
+   create_folder #optional: create a new user folder under parent folder
+   iam_roles_folder #give user viewer IAM role for folder
+   create_project #create new user project
+   billing_project #set up billing for the project
+   create_buckets #create input, output and nextflow buckets for each project
+   enable_project_api
+   #create_lifecycle_rules #LEAVE OFF. Adjust lifecycle rules for bucket but cant set last access time as a condition so $$$ to implement...
+   create_custom_vpc
+   connect_host_vpc #WARNING: must supply host VPC project on script execution 
+   create_firewall_rules #NOTE: applied only if not connecting to a host VPC. Only create FW rule for ssh VM connection #Done
+   create_service_accounts #create service accounts to authenticate to VMs
+   service_account_iam #set IAM roles for service accounts
+   user_account_iam #set IAM roles for user account
+   create_instance_templates #create templates for VM creation
+   add_vm_oslogin #add oslogin = TRUE to project-wide VM instances to link linux VM UID to GCP user/SA  
+   iam_policy_binding #attach SA and google amanged service agents to the host project - compare AB service project 
 
 }
 
@@ -89,13 +91,6 @@ set_variables(){
     export -f reset_var #export function
 }
 
-#TODO add the service accouts to VM on start-up
-
-#TODO remove - just for testing
-project_name='mhra_ngs_dev_u1us'
-export project_name
-
-
 
 create_folder(){
     echo "Creating User Folder"
@@ -108,7 +103,6 @@ create_folder(){
 # create and export folder_id variable
 folder_id=$(gcloud resource-manager folders list --folder=$parent_id --filter="DISPLAY_NAME=$folder_name" --format="value(ID)") 
 export folder_id
-
 
 iam_roles_folder(){
     echo "Add Folder Viewer Roles For User..."

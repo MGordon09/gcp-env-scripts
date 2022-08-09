@@ -51,7 +51,7 @@ create_ngs_nextflow(){
         --metadata=enable-oslogin=true \
         --maintenance-policy=MIGRATE \
         --provisioning-model=STANDARD \
-        --service-account=nextflow-vm@m$project_name.iam.gserviceaccount.com \
+        --service-account=nextflow-vm@$project_name.iam.gserviceaccount.com \
         --scopes=https://www.googleapis.com/auth/cloud-platform \
         --tags=mhra-ngs-nextflow \
         --create-disk=auto-delete=yes,boot=yes,device-name=persistent-disk-0,image=projects/$shr_prj/global/images/mhra-ngs-nextflow-dsub-v2,mode=rw,size=10,type=pd-balanced \
