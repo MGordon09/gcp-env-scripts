@@ -3,6 +3,9 @@
 # base set of filewall rules for projects not connect to host VPC
 # as default only allow connection to VMs in project
 
+# reset seperators to '-'
+project_name=$(reset_var $project_name)
+
 #allow ssh to VM using IAP
 gcloud compute firewall-rules create fw-allow-ssh-from-iap-to-vm \
     --description="Ingress firewall rule to allow ssh into VM using IAP" \

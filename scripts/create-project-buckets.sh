@@ -3,10 +3,13 @@
 # creating, nextflow, input and output buckets for the project
 # creating 3 by default - can add more as required
 
+# reset seperators to '-'
+project_name=$(reset_var $project_name)
+
 # for labelling
 servicename=$(echo $project_name | cut -d '-' -f2)
 environment=$(echo $project_name | cut -d '-' -f3)
-datelab=$(`date +'%d-%m-%y'`)
+datelab=$(date +'%d-%m-%y')
 
 # gsutil mb Parameters
 # -l bucket location: europe-west2
@@ -19,17 +22,15 @@ buckets=('input' 'output' 'nextflow')
 
 for b in ${buckets[@]}; do
 
-    gsutil mb gs://${project_name}-${b} \
+    gsutil mb \
         -p $project_name \
         -l 'europe-west2' \
         -c 'Standard' \
         -b 'on' \
-        --pap 'enforced' 
+        --pap 'enforced' \
+        gs://${project_name}-${b}
 
     #adding labels to bucket
-    gsutil label ch -l project:$project_name -l user:$folder_name \
-        -l email:$user_email -l environment:$environment \
-        -l servicename:$servicename creation-date:$datelab \
-        gs://${project_name}-${b}
+    gsutil label ch -l project:$project_name -l user:$folder_name -l environment:$environment -l servicename:$servicename -l creation-date:$datelab gs://${project_name}-${b}
 
 done

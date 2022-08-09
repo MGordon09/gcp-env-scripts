@@ -1,6 +1,9 @@
 #!/bin/bash
+
+
 # addding IAM principals (service accounts and service agents) to all host_prj subnets
 #NOTE: principle of least privilage; it may be best to add principals to a single subnet rather than all, so script could be modified. See: https://cloud.google.com/vpc/docs/provisioning-shared-vpc#create-shared
+project_name=$(reset_var $project_name)
 
 # add nextflow/dsub SA to subnets
 gcloud projects add-iam-policy-binding $host_prj \

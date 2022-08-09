@@ -2,6 +2,10 @@
 
 #Create custom VPC based on AB mhra-ngs-dev-c0c0 setup
 
+# reset seperators to '-'
+project_name=$(reset_var $project_name)
+prj_prefix=$(reset_var $prj_prefix)
+
 gcloud compute networks create ${project_name}-network \
     --project=$project_name \
     --subnet-mode=custom --mtu=1460 \

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# reset seperators to '-'
+project_name=$(reset_var $project_name)
+
 #IAM roles for gsutil service account
 
 user_account_iam(){
@@ -52,3 +55,6 @@ create_user_iam(){
         --role="roles/viewer"
     
 }
+
+#run script
+user_account_iam

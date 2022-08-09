@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# reset seperators to '-'
+project_name=$(reset_var $project_name)
+
 service_account_iam(){
 
     create_new_role #need to create new role following AB template
@@ -9,7 +12,7 @@ service_account_iam(){
 
 create_new_role(){
 
-    gcloud iam roles create 'Storage bucket and object admin for project' \
+    gcloud iam roles create 'Storage_bucket_object_admin' \
         --project $project_name \
         --description 'Storage bucket and object admin for project' \
         --permissions storage.buckets.create,storage.buckets.get,storage.buckets.list,storage.buckets.update,storage.objects.create,storage.objects.get,storage.objects.list
@@ -30,7 +33,7 @@ create_sa_iam(){
     #add newly created role
     gcloud projects add-iam-policy-binding $project_name \
         --member="serviceAccount:gsutil@$project_name.iam.gserviceaccount.com" \
-        --role="projects/$project_name/roles/Storage bucket and object admin for project"
+        --role="projects/$project_name/roles/Storage_bucket_object_admin"
 
 
     #logging-svc SA role
@@ -83,3 +86,6 @@ create_sa_iam(){
         --role="roles/notebooks.runner"
 
 }
+
+#run script
+service_account_iam

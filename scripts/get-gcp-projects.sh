@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This script is used to extract all project names and numbers with filter to select for projects created from AB template ('mvp' label) 
+# TODO: run this in main script and export vars to child processes
+
 prj_id=()
 prj_num=()
 

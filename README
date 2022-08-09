@@ -1,0 +1,6 @@
+After running script, go to IAM & Admin -> Organisation Policies
+Search for 'Define allowed external IPs for VM instances'
+Edit the policy -> create a custom policy -> Select Allow All -> Select Done and save
+
+*Note*
+Possible to allow VMs with external IPs with select tags - could allow this for NF vms to allow execution of the workflow
