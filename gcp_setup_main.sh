@@ -1,7 +1,6 @@
 #!/bin/bash 
 
-set -euo pipefail 
-
+set -euo pipefail #exit if non-zero exit status, unset variables found and prevent masking errors in pipeline
 # ------------------------------------------------------------------------------
 # Overview
 # Script to create and configure new user GCP projects using mhra-ngs-dev-c0c0 as template
@@ -19,6 +18,7 @@ if [[ -z "${1}" || -z "${2}" || -z "${3}" || -z "${4}" ]]; then #TODO maybe set 
   "
   exit
 fi
+
 
 # ------------------------------------------------------------------------------
 # Define Common Variables 
@@ -56,22 +56,23 @@ reset_var(){
 gcp_project_setup_main(){
    
    set_variables # <- DO NOT DISABLE!
-   create_folder #optional: create a new user folder under parent folder
-   iam_roles_folder #give user viewer IAM role for folder
+   create_folder #Optional: create a new user folder under parent folder
+   export_folder_id # <- DO NOT DISABLE!
    create_project #create new user project
    billing_project #set up billing for the project
    create_buckets #create input, output and nextflow buckets for each project
-   enable_project_api
-   #create_lifecycle_rules #LEAVE OFF. Adjust lifecycle rules for bucket but cant set last access time as a condition so $$$ to implement...
-   create_custom_vpc
-   connect_host_vpc #WARNING: must supply host VPC project on script execution 
-   create_firewall_rules #NOTE: applied only if not connecting to a host VPC. Only create FW rule for ssh VM connection #Done
+   enable_project_api #enable GCP services (Note: API list could be refined)
+   #create_lifecycle_rules #LEAVE OFF! Adjust lifecycle rules for bucket but cant set last access time as a condition so $$$ to implement...
+   create_custom_vpc #create vpc network (global resource) and subnets (regional) according to AB specifications
+   connect_host_vpc #Optional: connect user project to a pre-configured host-VPC projectWARNING: must supply host VPC project on script execution 
+   create_firewall_rules #Optional: NOTE - applied only if not connecting to a host VPC. Only FW rule for ssh VM connection enabled, add others to script as required 
    create_service_accounts #create service accounts to authenticate to VMs
    service_account_iam #set IAM roles for service accounts
    user_account_iam #set IAM roles for user account
    create_instance_templates #create templates for VM creation
    add_vm_oslogin #add oslogin = TRUE to project-wide VM instances to link linux VM UID to GCP user/SA  
-   iam_policy_binding #attach SA and google amanged service agents to the host project - compare AB service project 
+   iam_policy_binding #attach SA and google amanged service agents to the host project - compare AB service project
+   iam_roles_folder #give user viewer IAM role for folder
 
 }
 
@@ -98,20 +99,18 @@ create_folder(){
     bash ./scripts/create-user-folder.sh
 
     echo "Complete!"
-    sleep 2m
+    sleep 5m
 }
 
-# create and export folder_id variable
-folder_id=$(gcloud resource-manager folders list --folder=$parent_id --filter="DISPLAY_NAME=$folder_name" --format="value(ID)") 
-export folder_id
+export_folder_id(){
+    echo "Getting User Folder ID..."
 
-iam_roles_folder(){
-    echo "Add Folder Viewer Roles For User..."
-
-    bash ./scripts/user-folder-iam.sh
+    # create and export folder_id variable
+    folder_id=$(gcloud resource-manager folders list --folder=$parent_id --filter="DISPLAY_NAME=$folder_name" --format="value(ID)") 
+    export folder_id
 
     echo "Complete!"
-    sleep 2m 
+    sleep 2m
 }
 
 create_project(){
@@ -247,8 +246,19 @@ iam_policy_binding(){
     sleep 2m
 }
 
+iam_roles_folder(){
+    echo "Add Folder Viewer Roles For User..."
+
+    bash ./scripts/user-folder-iam.sh
+
+    echo "Complete!"
+    sleep 2m 
+}
+
 #------------------------------------------------------------------------------
 # Run Workflow
 #------------------------------------------------------------------------------
 
 gcp_project_setup_main
+
+echo "Workflow Complete!"
