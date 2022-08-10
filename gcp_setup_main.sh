@@ -98,6 +98,7 @@ create_folder(){
     bash ./scripts/create-user-folder.sh
 
     echo "Complete!"
+    sleep 2m
 }
 
 # create and export folder_id variable
@@ -109,7 +110,8 @@ iam_roles_folder(){
 
     bash ./scripts/user-folder-iam.sh
 
-    echo "Complete!" 
+    echo "Complete!"
+    sleep 2m 
 }
 
 create_project(){
@@ -118,7 +120,7 @@ create_project(){
     bash ./scripts/create-user-project.sh
 
     echo "Complete!"
-
+    sleep 2m
 }
 
 billing_project(){
@@ -127,7 +129,7 @@ billing_project(){
     bash ./scripts/billing-setup-project.sh
 
     echo "Complete!"
-
+    sleep 2m
 }
 
 create_buckets(){
@@ -136,6 +138,7 @@ create_buckets(){
     bash ./scripts/create-project-buckets.sh
 
     echo "Complete!"
+    sleep 2m
 }
 
 create_lifecycle_rules(){
@@ -145,6 +148,7 @@ create_lifecycle_rules(){
     bash ./scripts/create-bucket-lifecycle.sh
 
     echo "Complete!"
+    sleep 2m
 }
 
 create_custom_vpc(){
@@ -153,6 +157,7 @@ create_custom_vpc(){
     bash ./scripts/create-custom-vpc.sh
 
     echo "Complete!"
+    sleep 2m
 }
 
 connect_host_vpc(){
@@ -164,6 +169,7 @@ connect_host_vpc(){
         bash ./scripts/connect-host-vpc.sh
         echo "Complete!"
     fi
+    sleep 2m
 }
 
 create_firewall_rules(){
@@ -175,6 +181,7 @@ create_firewall_rules(){
     else
         echo "Skipping firewall rule implementation. Inheriting rules from host VPC project"
     fi
+    sleep 2m
 }
 
 create_service_accounts(){
@@ -183,6 +190,7 @@ create_service_accounts(){
     bash ./scripts/create-service-accounts.sh
     
     echo "Complete!"
+    sleep 2m
 }
 
 service_account_iam(){
@@ -191,6 +199,7 @@ service_account_iam(){
     bash ./scripts/service-account-iam.sh
 
     echo "Complete!"
+    sleep 2m
 }
 
 user_account_iam(){
@@ -199,6 +208,7 @@ user_account_iam(){
     bash ./scripts/user-account-iam.sh
 
     echo "Complete!"
+    sleep 2m
 }
 
 create_instance_templates(){
@@ -207,6 +217,7 @@ create_instance_templates(){
     bash ./scripts/create-instance-templates.sh
 
     echo "Complete!"
+    sleep 2m
 }
 
 add_vm_oslogin(){
@@ -215,6 +226,7 @@ add_vm_oslogin(){
     bash ./scripts/add-oslogin-metadata.sh
 
     echo "Complete!"
+    sleep 2m
 }
 
 enable_project_api(){
@@ -223,6 +235,7 @@ enable_project_api(){
     bash ./scripts/enable-project-api.sh
 
     echo "Complete!"
+    sleep 2m
 }
 
 iam_policy_binding(){
@@ -231,6 +244,7 @@ iam_policy_binding(){
     bash ./scripts/iam-policy-binding.sh
 
     echo "Complete!"
+    sleep 2m
 }
 
 #------------------------------------------------------------------------------
