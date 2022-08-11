@@ -25,11 +25,12 @@ cd gcp-env-scripts
 - **parent folder ID** the ID of the parent folder the user folder will sit under. This is the folders numeric identifier and can be found using the GCP console to view org hierarchy
 - **user email** email for the principal (e.g joe.blogs@nibsc.org) 
 - **share project** name of project that contains resources that are shared with other projects (e.g images for instance template creation)
+- **billing account id** billing account id. This can be found by looking up the 'MY PROJECTS' tab of the GCP Billing Service
 - **host project** (*Optional*) Specify name of host project to connect the new project and use a shared VPC setup. This can be left empty if you wish to create a standalone project, although you will need to manually configure the firewall rules (edit `create-firewall-rules.sh` script)
 
 ```
 # run script with shared VPC set-up
-bash gcp_setup_main.sh 'jblogs' '123456789012' 'joe.blogs@xxx.org' 'xxxxx-xxx-xxxxx-xxxx' 'xxxxx-xxx-xxxxx-xxxx'
+bash gcp_setup_main.sh 'jblogs' '123456789012' 'joe.blogs@xxx.org' 'share-proj-id' 'billing-account-id' 'host-prj-id'
 ```
 
 **NOTE**
