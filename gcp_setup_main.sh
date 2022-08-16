@@ -10,16 +10,16 @@ set -euo pipefail #exit if non-zero exit status, unset variables found and preve
 # Return Help Page  
 # ------------------------------------------------------------------------------
 
-if [[ -z "${1}" || -z "${2}" || -z "${3}" || -z "${4}" || -z "${5}" ]]; then 
-  echo "Usage: $0 foldername[e.g jblogs] parent-folder-id[e.g 12345678] user-email[e.g joe.blogs@nibsc.org] source-image-project[xxx-xxx-xxx-xxx] billing-account-id[xxxxxx-xxxxx-xxxxxx] (Optional)host-vpc-project[xxx-xxx-xxx-xxx]
+if [[ -z "${1}" || -z "${2}" || -z "${3}" || -z "${4}" ]]; then 
+  echo "Usage: $0 foldername[e.g jblogs] parent-folder-id[e.g 12345678] user-email[e.g joe.blogs@nibsc.org] source-image-project[xxx-xxx-xxx-xxx] (Optional)host-vpc-project[xxx-xxx-xxx-xxx]
 
   For parent folder ID, use cloud console or run ` gcloud resource-manager folders list --organization ORGIDNUMBER ` to list all folder details (need org id num)
-  For billing account ID, check the 'MY PROJECTS' section of GCP Billing Service
   (Optional) If connecting to new project to a host VPC, add host project name as fifth CL parameter when invoking script  
   "
   exit
 fi
-
+#Usage: $0 foldername[e.g jblogs] parent-folder-id[e.g 12345678] user-email[e.g joe.blogs@nibsc.org] source-image-project[xxx-xxx-xxx-xxx] billing-account-id[xxxxxx-xxxxx-xxxxxx] (Optional)host-vpc-project[xxx-xxx-xxx-xxx]
+#For billing account ID, check the 'MY PROJECTS' section of GCP Billing Service
 
 # ------------------------------------------------------------------------------
 # Define Common Variables 
@@ -30,12 +30,12 @@ folder_name=$1 #username folder eg jblogs
 parent_id=$2 #direct parent folder id
 user_email=$3 #principal
 shr_prj=$4 #Required for creating instance templates
-billing_account_id=$5 #billing account info - find in the 'Billing' Service
-host_prj=$6 #Required for connecting to host VPC project
-#billing_account_id=$(gcloud beta billing accounts list --format='value(ACCOUNT_ID)' | sed 's/-/_/g')
+#billing_account_id=$5 #billing account info - find in the 'Billing' Service
+host_prj=$5 #Required for connecting to host VPC project
 
 # define variables to export to subprocesses
 # '-' illegal export charactger; convert '_', export and reset in subprocess
+billing_account_id=$(gcloud beta billing accounts list --format='value(ACCOUNT_ID)' | sed 's/-/_/g')
 parent_name=$(gcloud resource-manager folders describe $parent_id --format='value(displayName)')
 prj_prefix=$(gcloud projects list --filter="parent.id: $parent_id" --format="value(NAME)" --limit=1 | cut -d "-" -f1-3 | sed 's/-/_/g')
 prj_suffix=$(head /dev/urandom | tr -dc a-z0-9 | head -c4) #four random alphanumeric characters
