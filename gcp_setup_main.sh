@@ -18,8 +18,6 @@ if [[ -z "${1}" || -z "${2}" || -z "${3}" || -z "${4}" ]]; then
   "
   exit
 fi
-#Usage: $0 foldername[e.g jblogs] parent-folder-id[e.g 12345678] user-email[e.g joe.blogs@nibsc.org] source-image-project[xxx-xxx-xxx-xxx] billing-account-id[xxxxxx-xxxxx-xxxxxx] (Optional)host-vpc-project[xxx-xxx-xxx-xxx]
-#For billing account ID, check the 'MY PROJECTS' section of GCP Billing Service
 
 # ------------------------------------------------------------------------------
 # Define Common Variables 
@@ -30,7 +28,6 @@ folder_name=$1 #username folder eg jblogs
 parent_id=$2 #direct parent folder id
 user_email=$3 #principal
 shr_prj=$4 #Required for creating instance templates
-#billing_account_id=$5 #billing account info - find in the 'Billing' Service
 host_prj=$5 #Required for connecting to host VPC project
 
 # define variables to export to subprocesses
@@ -47,7 +44,9 @@ reset_var(){
 }
 
 #Note: to implement any of these scripts for an available project, just name the project and uncomment lines below
-#project_name='mhra_ngs_dev_mr2s' #use underscores as replaced in subprocesses
+
+#project_name='xxx-xxx-xxx-xxxx' # <- input project name
+#project_name=$(echo $project_name | sed 's/-/_/g')
 #export project_name
 
 #------------------------------------------------------------------------------
@@ -100,7 +99,7 @@ create_folder(){
     
     bash ./scripts/create-user-folder.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 5m
 }
 
@@ -111,7 +110,7 @@ export_folder_id(){
     folder_id=$(gcloud resource-manager folders list --folder=$parent_id --filter="DISPLAY_NAME=$folder_name" --format="value(ID)") 
     export folder_id
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -120,7 +119,7 @@ create_project(){
 
     bash ./scripts/create-user-project.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -129,7 +128,7 @@ billing_project(){
 
     bash ./scripts/billing-setup-project.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -138,7 +137,7 @@ create_buckets(){
 
     bash ./scripts/create-project-buckets.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -148,7 +147,7 @@ create_lifecycle_rules(){
 
     bash ./scripts/create-bucket-lifecycle.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -157,7 +156,7 @@ create_custom_vpc(){
 
     bash ./scripts/create-custom-vpc.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -168,7 +167,7 @@ connect_host_vpc(){
     else
         echo "Connecting $project_name-network to host VPC project..."
         bash ./scripts/connect-host-vpc.sh
-        echo "Complete!"
+        echo "Module Complete!"
     fi
     sleep 2m
 }
@@ -178,7 +177,7 @@ create_firewall_rules(){
     if [[ -z "${host_prj}" ]]; then
         echo "Implementing base firewall rules"
         bash ./scripts/create-firewall-rules.sh
-        echo "Complete!"
+        echo "Module Complete!"
     else
         echo "Skipping firewall rule implementation. Inheriting rules from host VPC project"
     fi
@@ -190,7 +189,7 @@ create_service_accounts(){
     
     bash ./scripts/create-service-accounts.sh
     
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -199,7 +198,7 @@ service_account_iam(){
 
     bash ./scripts/service-account-iam.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -208,7 +207,7 @@ user_account_iam(){
 
     bash ./scripts/user-account-iam.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -217,7 +216,7 @@ create_instance_templates(){
 
     bash ./scripts/create-instance-templates.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -226,7 +225,7 @@ add_vm_oslogin(){
 
     bash ./scripts/add-oslogin-metadata.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -235,7 +234,7 @@ enable_project_api(){
 
     bash ./scripts/enable-project-api.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -244,7 +243,7 @@ iam_policy_binding(){
 
     bash ./scripts/iam-policy-binding.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m
 }
 
@@ -253,7 +252,7 @@ iam_roles_folder(){
 
     bash ./scripts/user-folder-iam.sh
 
-    echo "Complete!"
+    echo "Module Complete!"
     sleep 2m 
 }
 
